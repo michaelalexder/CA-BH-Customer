@@ -7,7 +7,7 @@
 
     <service>
         <jsr107:defaults enable-management="true" enable-statistics="true">
-            <jsr107:cache name="account" template="heap-cache"/>
+            <jsr107:cache name="customer" template="heap-cache"/>
         </jsr107:defaults>
     </service>
 

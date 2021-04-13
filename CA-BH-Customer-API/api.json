@@ -6,9 +6,199 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/v1/customer": {
+      "post": {
+        "summary": "Create new current account",
+        "tags": [
+          "customer"
+        ],
+        "requestBody": {
+          "description": "Customer account data to create",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createCustomerAccountRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "500": {
+            "description": "Internal Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/{customerId}/data": {
+      "post": {
+        "summary": "Customer data",
+        "tags": [
+          "customer"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "nullable": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/customerData"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorView"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   },
   "components": {
     "schemas": {
+      "createCustomerAccountRequest": {
+        "type": "object",
+        "required": [
+          "customerId",
+          "initialCredit"
+        ],
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "initialCredit": {
+            "type": "number"
+          }
+        }
+      },
+      "customerData": {
+        "type": "object",
+        "required": [
+          "name",
+          "surname",
+          "balance",
+          "accounts"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "balance": {
+            "type": "number"
+          },
+          "accounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/customerAccountData"
+            }
+          }
+        }
+      },
+      "customerAccountData": {
+        "type": "object",
+        "required": [
+          "number",
+          "balance",
+          "transactions"
+        ],
+        "properties": {
+          "number": {
+            "type": "string"
+          },
+          "balance": {
+            "type": "number"
+          },
+          "transactions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/transactionInfo"
+            }
+          }
+        }
+      },
+      "transactionInfo": {
+        "type": "object",
+        "required": [
+          "amount",
+          "createdAt"
+        ],
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "errorView": {
+        "type": "object",
+        "required": [
+          "message",
+          "details"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          }
+        }
+      }
     }
   }
 }

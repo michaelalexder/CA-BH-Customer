@@ -1,4 +1,4 @@
-package com.bhca.account;
+package com.bhca.customer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
