@@ -11,4 +11,4 @@ COPY --from=builder application/dependencies/ ./
 COPY --from=builder application/spring-boot-loader/ ./
 COPY --from=builder application/snapshot-dependencies/ ./
 COPY --from=builder application/application/ ./
-ENTRYPOINT ["java", "-Dserver.port=${CUSTOMER_SERVICE_PORT}", "org.springframework.boot.loader.JarLauncher"]
+ENTRYPOINT ["java", "-Dserver.port=${CUSTOMER_SERVICE_PORT}", "-Dservice.account.host=${ACCOUNT_SERVICE_HOST}", "org.springframework.boot.loader.JarLauncher"]

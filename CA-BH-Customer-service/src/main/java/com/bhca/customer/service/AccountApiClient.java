@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -43,7 +44,7 @@ public class AccountApiClient {
     private static class Api {
 
         private static final String CREATE_ACCOUNT = "/api/v1/account";
-        private static final String ACCOUNTS_LIST = "/api/v1/account/%s}";
+        private static final String ACCOUNTS_LIST = "/api/v1/account/%s";
     }
 
     private <T> HttpEntity<T> defaultHeaders(T body, Consumer<HttpHeaders> headersConsumer) {
@@ -58,20 +59,22 @@ public class AccountApiClient {
 
     public void createAccount(UUID customerId, BigDecimal amount) {
         String url = props.host + Api.CREATE_ACCOUNT;
+        logger.debug("Create account url {}", url);
         withLogging(() ->
                 restTemplate.postForEntity(url, defaultHeaders(new CreateAccountRequest().customerId(customerId)
                         .initialCredit(amount), null), Void.class), url);
     }
 
-    @SuppressWarnings("unchecked")
     public List<AccountData> accountData(UUID customerId, Integer page, Integer size) {
         String url = props.host + String.format(Api.ACCOUNTS_LIST, customerId);
-        return (List<AccountData>) withLogging(() ->
-                restTemplate.exchange(
-                        UriComponentsBuilder.fromHttpUrl(url)
-                                .queryParam("page", page)
-                                .queryParam("size", size)
-                                .toUriString(), HttpMethod.GET, defaultHeaders("", null), List.class), url);
+        String urlWithQuery = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("page", page)
+                .queryParam("size", size)
+                .toUriString();
+        logger.debug("Account data url {}", urlWithQuery);
+        return withLogging(() -> restTemplate.exchange(urlWithQuery, HttpMethod.GET,
+                defaultHeaders("", null),
+                new ParameterizedTypeReference<List<AccountData>>() {}).getBody(), urlWithQuery);
     }
 
     private <T> T withLogging(Supplier<T> func, String url) {

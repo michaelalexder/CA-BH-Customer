@@ -6,6 +6,29 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/v1/customer/all": {
+      "post": {
+        "summary": "All users",
+        "tags": [
+          "customer"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "500": {
+            "description": "Internal Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/customer": {
       "post": {
         "summary": "Create new current account",
@@ -104,6 +127,26 @@
   },
   "components": {
     "schemas": {
+      "customerInfo": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "surname"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          }
+        }
+      },
       "createCustomerAccountRequest": {
         "type": "object",
         "required": [
