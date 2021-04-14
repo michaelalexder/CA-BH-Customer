@@ -34,6 +34,9 @@ public class CustomerAccountService {
             throw new IllegalArgumentException("Initial credit must be greater or equals to zero");
         }
         Customer customer = customerService.getCustomer(customerId);
+        if (customer == null) {
+            throw new IllegalArgumentException("No customer with id " + customerId + " exists");
+        }
         accountApiClient.createAccount(customerId, initialCredit);
         customer.setBalance(customer.getBalance().add(initialCredit));
     }
